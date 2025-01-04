@@ -127,7 +127,7 @@ public final class WriteRequestJsonUtilities {
     }
 
     private static ModbusWriteRequestBlueprint constructBlueprint(int unitId, @Nullable JsonElement functionCodeElem,
-                                                                  @Nullable JsonElement addressElem, @Nullable JsonElement maxTriesElem, @Nullable JsonArray valuesElem) {
+            @Nullable JsonElement addressElem, @Nullable JsonElement maxTriesElem, @Nullable JsonArray valuesElem) {
         int functionCodeNumeric;
         if (functionCodeElem == null || functionCodeElem.isJsonNull()) {
             throw new IllegalStateException(String.format("Value for '%s' is invalid", JSON_FUNCTION_CODE));

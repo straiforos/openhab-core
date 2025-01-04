@@ -58,7 +58,6 @@ import org.slf4j.LoggerFactory;
 @NonNullByDefault
 @Component(service = UserRegistry.class, immediate = true)
 public class UserRegistryImpl extends AbstractRegistry<User, String, UserProvider> implements UserRegistry {
-    
 
     private final Logger logger = LoggerFactory.getLogger(UserRegistryImpl.class);
 

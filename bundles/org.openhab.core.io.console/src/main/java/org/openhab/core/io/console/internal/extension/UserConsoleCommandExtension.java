@@ -57,7 +57,8 @@ public class UserConsoleCommandExtension extends AbstractConsoleCommandExtension
 
     private final Logger logger = LoggerFactory.getLogger(UserConsoleCommandExtension.class);
 
-    // TODO create a role and user role registry to allow for swapping out the functionality as a plugin leaving core as is.
+    // TODO create a role and user role registry to allow for swapping out the functionality as a plugin leaving core as
+    // is.
     private final UserRegistry userRegistry;
 
     @Activate

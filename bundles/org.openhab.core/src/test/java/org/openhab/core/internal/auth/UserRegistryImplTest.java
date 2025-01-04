@@ -149,4 +149,3 @@ public class UserRegistryImplTest {
         assertEquals(user.getApiTokens().size(), 0);
     }
 }
-
