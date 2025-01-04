@@ -38,27 +38,27 @@
     <module>itests</module>
   </modules>
   <scm>
-    <connection>scm:git:https://repo.tvision360.io/TVision360/openhab-core.git</connection>
-    <developerConnection>scm:git:https://repo.tvision360.io/TVision360/openhab-core.git</developerConnection>
+    <connection>scm:git:https://github.com/straiforos/openhab-core.git</connection>
+    <developerConnection>scm:git:https://github.com/straiforos/openhab-core.git</developerConnection>
     <tag>HEAD</tag>
-    <url>https://repo.tvision360.io/TVision360/openhab-core</url>
+    <url>https://github.com/straiforos/openhab-core</url>
   </scm>
 
   <issueManagement>
-    <system>gitea</system>
-    <url>https://repo.tvision360.io/TVision360/openhab-core/issues</url>
+    <system>github</system>
+    <url>https://github.com/straiforos/openhab-core/issues</url>
   </issueManagement>
 
   <distributionManagement>
     <repository>
-      <id>tvision360-releases</id>
-      <name>TVision360 Maven Release Repository</name>
-      <url>${tvision360.repo.url}</url>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/straiforos/openhab-core</url>
     </repository>
     <snapshotRepository>
-      <id>tvision360-snapshots</id>
-      <name>TVision360 Maven Snapshot Repository</name>
-      <url>${tvision360.repo.url}</url>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/straiforos/openhab-core</url>
     </snapshotRepository>
   </distributionManagement>
 
