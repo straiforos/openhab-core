@@ -8,7 +8,7 @@ import org.openhab.core.common.registry.Registry;
  * administrator, and user UID are reserved.
  * 
  * @link Role
- * @author Stephen Traiforos - Triforce
+ * @author Stephen Traiforos (Triforce) - Initial contribution
  */
 @NonNullByDefault
 public interface RoleRegistry extends Registry<Role, String> {

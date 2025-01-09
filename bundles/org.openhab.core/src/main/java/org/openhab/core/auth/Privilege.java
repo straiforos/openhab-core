@@ -11,7 +11,7 @@ import org.openhab.core.common.registry.Identifiable;
  * </ul>
  * 
  * @example View_Roles_and_Privileges, Create_Role, Edit_Role, Delete_Role etc.
- * @author Stephen Traiforos - Triforce
+ * @author Stephen Traiforos (Triforce) - Initial contribution
  */
 @NonNullByDefault
 public interface Privilege extends Identifiable<String> {
