@@ -27,11 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openhab.core.auth.ManagedUser;
-import org.openhab.core.auth.User;
-import org.openhab.core.auth.UserApiTokenCredentials;
-import org.openhab.core.auth.UserSession;
-import org.openhab.core.auth.UsernamePasswordCredentials;
+import org.openhab.core.auth.*;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -57,7 +53,7 @@ public class UserRegistryImplTest {
     public void setup() throws Exception {
         when(bundleContextMock.getService(same(managedProviderRefMock))).thenReturn(managedProviderMock);
 
-        registry = new UserRegistryImpl(bundleContextMock, Map.of());
+        registry = new UserRegistryImpl(bundleContextMock, Map.of(), mock(RoleRegistry.class));
         registry.setManagedProvider(managedProviderMock);
         registry.waitForCompletedAsyncActivationTasks();
 

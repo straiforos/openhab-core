@@ -49,5 +49,5 @@ public interface Role extends Identifiable<String> {
      * 
      * @return list of privileges
      */
-    List<?> getPrivileges();
+    List<Privilege> getPrivileges();
 }
