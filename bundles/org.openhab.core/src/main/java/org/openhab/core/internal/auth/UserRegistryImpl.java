@@ -65,6 +65,7 @@ public class UserRegistryImpl extends AbstractRegistry<User, String, UserProvide
     private static final int KEY_LENGTH = 512;
     private static final String ALGORITHM = "PBKDF2WithHmacSHA512";
     private static final SecureRandom RAND = new SecureRandom();
+    // TODO add RoleRegistry to allow the user registry to add new and find existing roles but keep the interface the same.
 
     @Activate
     public UserRegistryImpl(BundleContext context, Map<String, Object> properties) {
@@ -89,6 +90,7 @@ public class UserRegistryImpl extends AbstractRegistry<User, String, UserProvide
         super.removeProvider(managedProvider);
     }
 
+    // TODO find or add roles to the registry
     @Override
     public User register(String username, String password, Set<String> roles) {
         String passwordSalt = generateSalt(KEY_LENGTH / 8).get();
