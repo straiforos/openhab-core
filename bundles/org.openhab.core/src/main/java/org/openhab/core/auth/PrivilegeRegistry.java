@@ -8,6 +8,6 @@ import org.openhab.core.common.registry.Registry;
  * 
  * @author Stephen Traiforos - Triforce
  */
-public interface PrivilegeRegistry extends Registry<Privilege, Integer> {
+public interface PrivilegeRegistry extends Registry<Privilege, String> {
 
 }

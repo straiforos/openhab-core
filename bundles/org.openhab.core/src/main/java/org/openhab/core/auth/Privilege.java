@@ -1,5 +1,6 @@
 package org.openhab.core.auth;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.core.common.registry.Identifiable;
 
 /**
@@ -12,6 +13,7 @@ import org.openhab.core.common.registry.Identifiable;
  * @example View_Roles_and_Privileges, Create_Role, Edit_Role, Delete_Role etc.
  * @author Stephen Traiforos - Triforce
  */
-public interface Privilege extends Identifiable<Integer> {
+@NonNullByDefault
+public interface Privilege extends Identifiable<String> {
     String getName();
 }
