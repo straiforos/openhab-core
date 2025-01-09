@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.core.common.registry.Identifiable;
 
-
 /**
  * Interface defining roles which are a collection of privileges.
  * administrator, and user UID are reserved.
