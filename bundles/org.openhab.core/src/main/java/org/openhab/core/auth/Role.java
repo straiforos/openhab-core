@@ -12,12 +12,17 @@
  */
 package org.openhab.core.auth;
 
+import java.util.List;
+
+import org.openhab.core.common.registry.Identifiable;
+
 /**
- * Interface defining constants for roles within the framework.
+ * Interface defining roles which are a collection of privileges.
+ * 0, and 1 UID are reserved for Administrator and User roles.
  *
  * @author Kai Kreuzer - Initial contribution
  */
-public interface Role {
+public interface Role extends Identifiable<Integer> {
 
     /**
      * Role of users with administrative rights
@@ -28,4 +33,18 @@ public interface Role {
      * Role of a regular user without any exceptional permissions or restrictions
      */
     String USER = "user";
+
+    /**
+     * Name of the role typically user or administrator.
+     * 
+     * @return name of role.
+     */
+    String getName();
+
+    /**
+     * List of privileges a user role has.
+     * 
+     * @return list of privileges
+     */
+    List<?> getPrivileges();
 }
