@@ -1,5 +1,6 @@
 package org.openhab.core.auth;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.core.common.registry.Registry;
 
 /**
@@ -9,6 +10,7 @@ import org.openhab.core.common.registry.Registry;
  * @link Role
  * @author Stephen Traiforos - Triforce
  */
+@NonNullByDefault
 public interface RoleRegistry extends Registry<Role, String> {
 
 }

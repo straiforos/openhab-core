@@ -1,5 +1,6 @@
 package org.openhab.core.auth;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.core.common.registry.Registry;
 
 /**
@@ -8,6 +9,7 @@ import org.openhab.core.common.registry.Registry;
  * 
  * @author Stephen Traiforos - Triforce
  */
+@NonNullByDefault
 public interface PrivilegeRegistry extends Registry<Privilege, String> {
 
 }
