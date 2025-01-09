@@ -14,15 +14,19 @@ package org.openhab.core.auth;
 
 import java.util.List;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.core.common.registry.Identifiable;
+
 
 /**
  * Interface defining roles which are a collection of privileges.
- * 0, and 1 UID are reserved for Administrator and User roles.
+ * administrator, and user UID are reserved.
  *
  * @author Kai Kreuzer - Initial contribution
+ * @author Stephen Traiforos - Dynamic Roles and Privileges for RBAC Git issue 3305.
  */
-public interface Role extends Identifiable<Integer> {
+@NonNullByDefault
+public interface Role extends Identifiable<String> {
 
     /**
      * Role of users with administrative rights
