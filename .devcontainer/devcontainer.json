@@ -1,0 +1,5 @@
+{
+    "image":"mcr.microsoft.com/devcontainers/universal:2",
+    "postStartCommand": "sdk install java 21.0.5-jbr && sdk default java 21.0.5-jbr",
+    "postCreateCommand": "echo java --version"
+}
