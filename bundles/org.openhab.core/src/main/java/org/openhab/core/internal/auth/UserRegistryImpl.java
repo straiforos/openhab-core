@@ -56,8 +56,10 @@ public class UserRegistryImpl extends AbstractRegistry<User, String, UserProvide
     private static final String ALGORITHM = "PBKDF2WithHmacSHA512";
     private static final SecureRandom RAND = new SecureRandom();
     private final RoleRegistry roleRegistry;
+
     @Activate
-    public UserRegistryImpl(BundleContext context, Map<String, Object> properties, final @Reference RoleRegistry roleRegistry) {
+    public UserRegistryImpl(BundleContext context, Map<String, Object> properties,
+            final @Reference RoleRegistry roleRegistry) {
         super(UserProvider.class);
         super.activate(context);
         this.roleRegistry = roleRegistry;
@@ -86,9 +88,9 @@ public class UserRegistryImpl extends AbstractRegistry<User, String, UserProvide
         String passwordHash = hash(password, passwordSalt, PASSWORD_ITERATIONS).get();
         ManagedUser user = new ManagedUser(username, passwordSalt, passwordHash);
         user.setRoles(new HashSet<>(roles));
-        for (String role: roles){
+        for (String role : roles) {
             // Check if role does not exist in the registry.
-            if(roleRegistry.get(role) == null) {
+            if (roleRegistry.get(role) == null) {
                 // Create new role for future users to associate to.
                 roleRegistry.add(new RoleImpl(role));
             }

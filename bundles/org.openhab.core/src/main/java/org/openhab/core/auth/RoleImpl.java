@@ -1,12 +1,13 @@
 package org.openhab.core.auth;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
-
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
- * @author Stephen Traiforos -  Initial Contribution
+ * @author Stephen Traiforos - Initial Contribution
  */
 @NonNullByDefault
 public class RoleImpl implements Role {
@@ -14,12 +15,15 @@ public class RoleImpl implements Role {
     public RoleImpl(@NotNull String name) {
         this(name, null);
     }
+
     public RoleImpl(@NotNull String name, List<Privilege> privileges) {
         this.setName(name);
         this.setUID(this.getName().toLowerCase());
         this.setPrivileges(privileges);
     }
+
     private String name;
+
     @Override
     public String getName() {
         return name;
@@ -30,6 +34,7 @@ public class RoleImpl implements Role {
     }
 
     private List<Privilege> privileges;
+
     @Override
     public List<Privilege> getPrivileges() {
         return privileges;
@@ -40,6 +45,7 @@ public class RoleImpl implements Role {
     }
 
     private String id;
+
     @Override
     public String getUID() {
         return id;

@@ -5,6 +5,7 @@ import org.openhab.core.common.registry.Provider;
 
 /**
  * Role provider
+ * 
  * @author Stephen Traiforos - Initial contribution
  */
 @NonNullByDefault
