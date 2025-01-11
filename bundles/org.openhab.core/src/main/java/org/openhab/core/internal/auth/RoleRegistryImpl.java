@@ -19,10 +19,10 @@ import org.openhab.core.auth.RoleRegistry;
 import org.openhab.core.common.registry.AbstractRegistry;
 import org.osgi.service.component.annotations.Component;
 
-
 /**
  * Registry to persist user roles that are configured.
- * @author Stephen Traiforos  (Triforce) - Initial contribution
+ * 
+ * @author Stephen Traiforos (Triforce) - Initial contribution
  */
 @NonNullByDefault
 @Component(service = RoleRegistry.class, immediate = true)
