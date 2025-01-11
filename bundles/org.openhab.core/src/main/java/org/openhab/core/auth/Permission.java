@@ -10,10 +10,10 @@ import org.openhab.core.common.registry.Identifiable;
  * <li>CRUD access</li>
  * </ul>
  * 
- * @example View_Roles_and_Privileges, Create_Role, Edit_Role, Delete_Role etc.
+ * @example View_Roles, View_Permissions, Create_Role, Edit_Role, Delete_Role etc.
  * @author Stephen Traiforos (Triforce) - Initial contribution
  */
 @NonNullByDefault
-public interface Privilege extends Identifiable<String> {
+public interface Permission extends Identifiable<String> {
     String getName();
 }
