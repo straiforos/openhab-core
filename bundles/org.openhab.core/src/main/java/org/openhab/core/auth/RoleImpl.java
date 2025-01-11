@@ -47,6 +47,7 @@ public class RoleImpl implements Role {
     // TODO Validation to prevent special characters will be needed on the model.
     /**
      * ID to Satisfy registry constraint but uses the Role name string in lowercase for dynamically added roles.
+     * 
      * @return
      */
     @Override
