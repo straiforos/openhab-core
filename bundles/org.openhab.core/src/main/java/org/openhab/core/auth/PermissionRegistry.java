@@ -22,6 +22,6 @@ import org.openhab.core.common.registry.Registry;
  * @author Stephen Traiforos (Triforce) - Initial contribution
  */
 @NonNullByDefault
-public interface PrivilegeRegistry extends Registry<Permission, String> {
+public interface PermissionRegistry extends Registry<Permission, String> {
 
 }
