@@ -21,6 +21,9 @@ import org.openhab.core.common.registry.Identifiable;
  * Interface defining roles which are a collection of privileges.
  * administrator, and user UID are reserved.
  *
+ * Roles should be used only as a user facing construct.
+ * The application should look at permissions the user has.
+ *
  * @author Kai Kreuzer - Initial contribution
  * @author Stephen Traiforos - Dynamic Roles and Privileges for RBAC Git issue 3305.
  */

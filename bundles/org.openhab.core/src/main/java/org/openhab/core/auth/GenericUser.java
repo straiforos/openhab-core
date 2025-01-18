@@ -63,4 +63,9 @@ public class GenericUser implements User {
     public Set<String> getRoles() {
         return roles;
     }
+
+    @Override
+    public String toString() {
+        return name + " (" + getRoles() + ")";
+    }
 }

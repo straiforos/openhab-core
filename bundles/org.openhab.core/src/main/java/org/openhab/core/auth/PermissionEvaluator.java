@@ -18,6 +18,13 @@ package org.openhab.core.auth;
  * @author Stephen Traiforos - Brought from Łukasz's contributions.
  */
 public interface PermissionEvaluator<T> {
+    /**
+     * Allows checking if a class has permissions available to be authorized for.
+     * 
+     * @param type
+     * @param permission
+     * @return
+     */
     boolean supports(Class<?> type, Permission permission);
 
     /**
