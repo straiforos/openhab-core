@@ -11,7 +11,7 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.core.auth;
-
+// TODO split into ItemPermissions since only items have state, command etc
 /**
  * Common permission definitions.
  *
