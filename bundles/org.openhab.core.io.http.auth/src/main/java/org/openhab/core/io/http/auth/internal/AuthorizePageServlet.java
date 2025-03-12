@@ -31,6 +31,7 @@ import org.openhab.core.auth.AuthenticationProvider;
 import org.openhab.core.auth.ManagedUser;
 import org.openhab.core.auth.PendingToken;
 import org.openhab.core.auth.Role;
+import org.openhab.core.auth.RoleImpl;
 import org.openhab.core.auth.User;
 import org.openhab.core.auth.UserRegistry;
 import org.openhab.core.i18n.LocaleProvider;
@@ -158,7 +159,7 @@ public class AuthorizePageServlet extends AbstractAuthPageServlet {
                     return;
                 }
 
-                user = userRegistry.register(username, password, Set.of(Role.ADMIN));
+                user = userRegistry.register(username, password, Set.of(new RoleImpl(Role.ADMIN)));
                 logger.info("First user account created: {}", username);
             } else {
                 user = login(username, password);
