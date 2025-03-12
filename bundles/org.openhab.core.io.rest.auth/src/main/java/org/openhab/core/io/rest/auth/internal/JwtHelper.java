@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.jose4j.jwa.AlgorithmConstraints.ConstraintType;
@@ -40,6 +41,8 @@ import org.openhab.core.OpenHAB;
 import org.openhab.core.auth.Authentication;
 import org.openhab.core.auth.AuthenticationException;
 import org.openhab.core.auth.User;
+import org.openhab.core.auth.Role;
+import org.openhab.core.auth.RoleImpl;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +118,11 @@ public class JwtHelper {
             jwtClaims.setSubject(user.getName());
             jwtClaims.setClaim("client_id", clientId);
             jwtClaims.setClaim("scope", scope);
-            jwtClaims.setStringListClaim("role", new ArrayList<>(user.getRoles() != null ? user.getRoles() : Set.of()));
+            List<String> roleStrings = new ArrayList<>();
+            for(Role role: user.getRoles()) {
+                roleStrings.add(role.getName());
+            }
+            jwtClaims.setStringListClaim("role", roleStrings);
 
             JsonWebSignature jws = new JsonWebSignature();
             jws.setPayload(jwtClaims.toJson());
@@ -145,9 +152,13 @@ public class JwtHelper {
         try {
             JwtClaims jwtClaims = jwtConsumer.processToClaims(jwt);
             String username = jwtClaims.getSubject();
-            List<String> roles = jwtClaims.getStringListClaimValue("role");
+            List<String> roleStrings = jwtClaims.getStringListClaimValue("role");
             String scope = jwtClaims.getStringClaimValue("scope");
-            return new Authentication(username, roles.toArray(new String[roles.size()]), scope);
+            Set<Role> roles = new HashSet();
+            for(String role: roleStrings) {
+                roles.add(new RoleImpl(role));
+            }
+            return new Authentication(username,(Role[]) roles.toArray(), scope);
         } catch (InvalidJwtException | MalformedClaimException e) {
             throw new AuthenticationException("Error while processing JWT token", e);
         }
