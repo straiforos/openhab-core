@@ -16,6 +16,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.openhab.core.auth.Permissions;
 
 /**
  * Annotation to specify required permissions for accessing a resource or method
@@ -24,5 +25,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface RequiresPermission {
-    String[] value();
+    Permissions[] value();
 }

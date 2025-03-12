@@ -49,7 +49,7 @@ public class SseSinkTopicInfo {
         // Implement topic-specific permission logic
         if (topic.startsWith("openhab/items/")) {
             return userPermissions.stream()
-                .anyMatch(p -> p.getName().equals(Permissions.READ));
+                .anyMatch(p -> p.equals(Permissions.READ.getPermission()));
         }
         // Add other topic permission checks
         return false;

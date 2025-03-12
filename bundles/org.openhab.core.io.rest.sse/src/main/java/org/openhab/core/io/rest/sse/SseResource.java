@@ -73,7 +73,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openhab.core.auth.RequiresPermission;
-import org.openhab.core.auth.Permissions;
+import static org.openhab.core.auth.Permissions.*;
 
 /**
  * SSE Resource for pushing events to currently listening clients.
@@ -173,7 +173,7 @@ public class SseResource implements RESTResource, SsePublisher {
     }
 
     @GET
-    @RequiresPermission(Permissions.READ)
+    @RequiresPermission(READ)
     @Produces(MediaType.SERVER_SENT_EVENTS)
     @Operation(operationId = "getEvents", summary = "Get all events.", responses = {
             @ApiResponse(responseCode = "200", description = "OK"),

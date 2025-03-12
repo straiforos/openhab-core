@@ -38,4 +38,12 @@ public class PermissionImpl implements Permission {
     public String getUID() {
         return name.toLowerCase();
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof PermissionImpl)
+            return ((PermissionImpl) o).getUID().equals(getUID());
+        else
+            return false;
+    }
 }

@@ -56,6 +56,8 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.auth.Role;
+import static org.openhab.core.auth.Permissions.*;
+import org.openhab.core.auth.RequiresPermission;
 import org.openhab.core.common.registry.RegistryChangedRunnableListener;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.i18n.TimeZoneProvider;
@@ -232,7 +234,7 @@ public class ItemResource implements RESTResource {
     }
 
     @GET
-    @RequiresPermission(Permissions.READ)
+    @RequiresPermission(READ)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(operationId = "getItems", summary = "Get all available items.", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(array = @ArraySchema(schema = @Schema(implementation = EnrichedItemDTO.class)))) })
@@ -314,7 +316,7 @@ public class ItemResource implements RESTResource {
     }
 
 
-    // TODO add permission check for Permissions.READ
+    // TODO add permission check for READ
     @GET
     @RolesAllowed({ Role.USER, Role.ADMIN })
     @Path("/{itemname: [a-zA-Z_0-9]+}")
@@ -355,7 +357,7 @@ public class ItemResource implements RESTResource {
         return metadataSelectorMatcher.filterNamespaces(namespaceSelector, locale);
     }
 
-    // TODO add permission check for Permissions.READ
+    // TODO add permission check for READ
     /**
      *
      * @param itemname item name to get the state from
@@ -382,7 +384,7 @@ public class ItemResource implements RESTResource {
         }
     }
 
-    // TODO add permission check for Permissions.READ
+    // TODO add permission check for READ
 
     /**
      *
@@ -425,7 +427,7 @@ public class ItemResource implements RESTResource {
         }
     }
 
-    // TODO add permission check for Permissions.READ.
+    // TODO add permission check for READ.
     @PUT
     @RolesAllowed({ Role.USER, Role.ADMIN })
     @Path("/{itemname: [a-zA-Z_0-9]+}/state")
@@ -463,7 +465,7 @@ public class ItemResource implements RESTResource {
         }
     }
 
-    // TODO add permission check for Permissions.COMMAND
+    // TODO add permission check for COMMAND
     @POST
     @RolesAllowed({ Role.USER, Role.ADMIN })
     @Path("/{itemname: [a-zA-Z_0-9]+}")
@@ -742,7 +744,7 @@ public class ItemResource implements RESTResource {
      * @return Response configured to represent the Item in depending on the status
      */
     @PUT
-    @RequiresPermission({Permissions.MANAGE, Permissions.WRITE})
+    @RequiresPermission({MANAGE})
     @Path("/{itemname: [a-zA-Z_0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(operationId = "addOrUpdateItemInRegistry", summary = "Adds a new item to the registry or updates the existing item.", security = {
