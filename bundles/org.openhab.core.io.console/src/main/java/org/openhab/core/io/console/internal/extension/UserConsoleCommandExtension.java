@@ -15,10 +15,13 @@ package org.openhab.core.io.console.internal.extension;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.HashSet;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.core.auth.ManagedUser;
 import org.openhab.core.auth.User;
+import org.openhab.core.auth.Role;
+import org.openhab.core.auth.RoleImpl;
 import org.openhab.core.auth.UserApiToken;
 import org.openhab.core.auth.UserRegistry;
 import org.openhab.core.io.console.Console;
@@ -82,7 +85,11 @@ public class UserConsoleCommandExtension extends AbstractConsoleCommandExtension
                     if (args.length == 4) {
                         User existingUser = userRegistry.get(args[1]);
                         if (existingUser == null) {
-                            User newUser = userRegistry.register(args[1], args[2], Set.of(args[3]));
+                            Set<Role> roles = new HashSet<>();
+                            for (String roleName : Set.of(args[3])) {
+                                roles.add(new RoleImpl(roleName));
+                            }
+                            User newUser = userRegistry.register(args[1], args[2], roles);
                             console.println(newUser.toString());
                             console.println("User created.");
                         } else {
