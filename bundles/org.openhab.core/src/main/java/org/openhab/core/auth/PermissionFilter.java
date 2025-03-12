@@ -61,7 +61,8 @@ public class PermissionFilter implements ContainerRequestFilter {
      * Filters users who do not have the appropriate permission(s) supplied in the @RequiresPermission annotation.
      */
     @Override
-    public void filter(ContainerRequestContext requestContext) throws UnauthenticatedUserException, UserNotFoundAuthException, UserUnauthorizedException {
+    public void filter(ContainerRequestContext requestContext)
+            throws UnauthenticatedUserException, UserNotFoundAuthException, UserUnauthorizedException {
         // Get the resource method
         Method method = resourceInfo.getResourceMethod();
 
@@ -91,8 +92,8 @@ public class PermissionFilter implements ContainerRequestFilter {
                 .allMatch(requiredPerm -> userPermissions.stream().anyMatch(p -> p.getName().equals(requiredPerm)));
 
         if (!hasPermission) {
-            throw new UserUnauthorizedException(
-                    "User '" + username + "' does not have the required permissions: " + Arrays.toString(permissionAnn.value()));
+            throw new UserUnauthorizedException("User '" + username + "' does not have the required permissions: "
+                    + Arrays.toString(permissionAnn.value()));
         }
     }
 }

@@ -12,6 +12,8 @@
  */
 package org.openhab.core.io.rest.core.internal.item;
 
+import static org.openhab.core.auth.Permissions.*;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -55,9 +57,8 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.core.auth.Role;
-import static org.openhab.core.auth.Permissions.*;
 import org.openhab.core.auth.RequiresPermission;
+import org.openhab.core.auth.Role;
 import org.openhab.core.common.registry.RegistryChangedRunnableListener;
 import org.openhab.core.events.EventPublisher;
 import org.openhab.core.i18n.TimeZoneProvider;
@@ -195,13 +196,9 @@ public class ItemResource implements RESTResource {
     private @Nullable Date lastModified = null;
 
     @Activate
-    public ItemResource(
-            final @Reference DTOMapper dtoMapper,
-            final @Reference EventPublisher eventPublisher,
-            final @Reference ItemBuilderFactory itemBuilderFactory,
-            final @Reference ItemRegistry itemRegistry,
-            final @Reference LocaleService localeService,
-            final @Reference ManagedItemProvider managedItemProvider,
+    public ItemResource(final @Reference DTOMapper dtoMapper, final @Reference EventPublisher eventPublisher,
+            final @Reference ItemBuilderFactory itemBuilderFactory, final @Reference ItemRegistry itemRegistry,
+            final @Reference LocaleService localeService, final @Reference ManagedItemProvider managedItemProvider,
             final @Reference MetadataRegistry metadataRegistry,
             final @Reference MetadataSelectorMatcher metadataSelectorMatcher,
             final @Reference SemanticTagRegistry semanticTagRegistry,
@@ -314,7 +311,6 @@ public class ItemResource implements RESTResource {
             return getItemNotFoundResponse(itemname);
         }
     }
-
 
     // TODO add permission check for READ
     @GET
@@ -744,7 +740,7 @@ public class ItemResource implements RESTResource {
      * @return Response configured to represent the Item in depending on the status
      */
     @PUT
-    @RequiresPermission({MANAGE})
+    @RequiresPermission({ MANAGE })
     @Path("/{itemname: [a-zA-Z_0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(operationId = "addOrUpdateItemInRegistry", summary = "Adds a new item to the registry or updates the existing item.", security = {

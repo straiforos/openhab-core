@@ -28,4 +28,4 @@ public class UnauthenticatedUserException extends WebApplicationException {
     public UnauthenticatedUserException(String message) {
         super(message, Response.Status.UNAUTHORIZED);
     }
-} 
+}

@@ -14,8 +14,8 @@ package org.openhab.core.io.rest.auth.internal;
 
 import java.util.Collection;
 
-import org.openhab.core.auth.User;
 import org.openhab.core.auth.Role;
+import org.openhab.core.auth.User;
 
 /**
  * A DTO representing a {@link User}.

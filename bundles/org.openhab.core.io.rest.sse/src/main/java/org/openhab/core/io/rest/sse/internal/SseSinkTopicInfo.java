@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.openhab.core.io.rest.sse.internal.util.SseUtil;
 import org.openhab.core.auth.Permission;
 import org.openhab.core.auth.Permissions;
+import org.openhab.core.io.rest.sse.internal.util.SseUtil;
 
 /**
  * The specific information we need to hold for a SSE sink which subscribes to event topics.
@@ -42,15 +42,13 @@ public class SseSinkTopicInfo {
 
     public boolean canAccessTopic(String topic) {
         // Check if user has permission for this topic
-        return regexFilters.stream().anyMatch(topic::matches) && 
-               hasPermissionForTopic(topic);
+        return regexFilters.stream().anyMatch(topic::matches) && hasPermissionForTopic(topic);
     }
-    
+
     private boolean hasPermissionForTopic(String topic) {
         // Implement topic-specific permission logic
         if (topic.startsWith("openhab/items/")) {
-            return userPermissions.stream()
-                .anyMatch(p -> p.equals(Permissions.READ.getPermission()));
+            return userPermissions.stream().anyMatch(p -> p.equals(Permissions.READ.getPermission()));
         }
         // Add other topic permission checks
         return false;

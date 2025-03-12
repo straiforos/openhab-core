@@ -12,16 +12,16 @@
  */
 package org.openhab.core.io.console.internal.extension;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.HashSet;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.core.auth.ManagedUser;
-import org.openhab.core.auth.User;
 import org.openhab.core.auth.Role;
 import org.openhab.core.auth.RoleImpl;
+import org.openhab.core.auth.User;
 import org.openhab.core.auth.UserApiToken;
 import org.openhab.core.auth.UserRegistry;
 import org.openhab.core.io.console.Console;

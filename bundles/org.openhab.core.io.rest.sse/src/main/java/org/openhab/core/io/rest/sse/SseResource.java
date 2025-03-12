@@ -12,14 +12,15 @@
  */
 package org.openhab.core.io.rest.sse;
 
+import static org.openhab.core.auth.Permissions.*;
 import static org.openhab.core.io.rest.sse.internal.SseSinkItemInfo.*;
 import static org.openhab.core.io.rest.sse.internal.SseSinkTopicInfo.matchesTopic;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -45,6 +46,8 @@ import javax.ws.rs.sse.SseEventSink;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.core.auth.Permission;
+import org.openhab.core.auth.RequiresPermission;
 import org.openhab.core.auth.Role;
 import org.openhab.core.common.ThreadPoolManager;
 import org.openhab.core.events.Event;
@@ -74,9 +77,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.openhab.core.auth.RequiresPermission;
-import org.openhab.core.auth.Permission;
-import static org.openhab.core.auth.Permissions.*;
 
 /**
  * SSE Resource for pushing events to currently listening clients.

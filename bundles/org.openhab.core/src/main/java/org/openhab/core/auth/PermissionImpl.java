@@ -41,7 +41,7 @@ public class PermissionImpl implements Permission {
 
     @Override
     public boolean equals(Object o) {
-        if(o instanceof PermissionImpl)
+        if (o instanceof PermissionImpl)
             return ((PermissionImpl) o).getUID().equals(getUID());
         else
             return false;

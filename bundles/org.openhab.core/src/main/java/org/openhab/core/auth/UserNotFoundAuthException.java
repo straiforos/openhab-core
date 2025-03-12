@@ -16,4 +16,4 @@ public class UserNotFoundAuthException extends WebApplicationException {
     public UserNotFoundAuthException(String username) {
         super("Authenticated user '" + username + "' not found in registry", Response.Status.NOT_FOUND);
     }
-} 
+}

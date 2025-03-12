@@ -16,4 +16,4 @@ public class UserUnauthorizedException extends WebApplicationException {
     public UserUnauthorizedException(String message) {
         super(message, Response.Status.FORBIDDEN);
     }
-} 
+}
