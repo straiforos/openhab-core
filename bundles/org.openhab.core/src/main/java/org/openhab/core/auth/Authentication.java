@@ -25,11 +25,12 @@ import java.util.Set;
  * @author Łukasz Dywicki - Initial contribution
  * @author Kai Kreuzer - Added JavaDoc and switched from array to Set
  * @author Yannick Schaus - Add scope
+ * @author Stephen Traiforos - Role based access control
  */
 public class Authentication {
 
     private String username;
-    private Set<String> roles;
+    private Set<Role> roles;
     private String scope;
 
     /**
@@ -47,7 +48,7 @@ public class Authentication {
      * @param username name of the user associated to this authentication instance
      * @param roles a variable list of roles that the user possesses.
      */
-    public Authentication(String username, String... roles) {
+    public Authentication(String username, Role... roles) {
         this.username = username;
         this.roles = new HashSet<>(Arrays.asList(roles));
     }
@@ -59,7 +60,7 @@ public class Authentication {
      * @param roles a variable list of roles that the user possesses.
      * @param scope a scope this authentication is valid for
      */
-    public Authentication(String username, String[] roles, String scope) {
+    public Authentication(String username, Role[] roles, String scope) {
         this(username, roles);
         this.scope = scope;
     }
@@ -78,7 +79,7 @@ public class Authentication {
      *
      * @return a set of roles
      */
-    public Set<String> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 

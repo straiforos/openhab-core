@@ -11,7 +11,9 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.core.auth;
+
 // TODO split into ItemPermissions since only items have state, command etc
+// TODO make named permissions PermissionImpl so we do not have reference to anothe project.
 /**
  * Common permission definitions.
  *
@@ -19,10 +21,10 @@ package org.openhab.core.auth;
  * @author Stephen Traiforos - Brought from Łukasz's contributions.
  */
 public interface Permissions {
-    Permission ALL = new NamedPermission("*");
-    Permission READ = new NamedPermission("read");
-    Permission STATE = new NamedPermission("state");
-    Permission COMMAND = new NamedPermission("command");
-    Permission MANAGE = new NamedPermission("manage");
-    Permission PERSISTENCE = new NamedPermission("persistence");
+    Permission ALL = new PermissionImpl("*");
+    Permission READ = new PermissionImpl("read");
+    Permission STATE = new PermissionImpl("state");
+    Permission COMMAND = new PermissionImpl("command");
+    Permission MANAGE = new PermissionImpl("manage");
+    Permission PERSISTENCE = new PermissionImpl("persistence");
 }

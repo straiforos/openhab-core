@@ -18,6 +18,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * @author Stephen Traiforos - Initial Contribution
@@ -65,5 +66,20 @@ public class RoleImpl implements Role {
     @Override
     public String getUID() {
         return name.toLowerCase();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (o == null) {
+            return false;
+        }
+
+        if (!(o instanceof RoleImpl)) {
+            return false;
+        }
+
+        RoleImpl role = (RoleImpl) o;
+
+        return role.toString().equals(this.toString());
     }
 }

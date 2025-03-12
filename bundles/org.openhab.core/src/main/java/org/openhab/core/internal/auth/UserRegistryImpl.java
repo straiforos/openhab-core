@@ -83,16 +83,16 @@ public class UserRegistryImpl extends AbstractRegistry<User, String, UserProvide
     }
 
     @Override
-    public User register(String username, String password, Set<String> roles) {
+    public User register(String username, String password, Set<Role> roles) {
         String passwordSalt = generateSalt(KEY_LENGTH / 8).get();
         String passwordHash = hash(password, passwordSalt, PASSWORD_ITERATIONS).get();
         ManagedUser user = new ManagedUser(username, passwordSalt, passwordHash);
         user.setRoles(new HashSet<>(roles));
-        for (String role : roles) {
+        for (Role role : roles) {
             // Check if role does not exist in the registry.
-            if (roleRegistry.get(role) == null) {
+            if (roleRegistry.get(role.getUID()) == null) {
                 // Create new role for future users to associate to.
-                roleRegistry.add(new RoleImpl(role));
+                roleRegistry.add(role);
             }
         }
         super.add(user);
@@ -146,7 +146,7 @@ public class UserRegistryImpl extends AbstractRegistry<User, String, UserProvide
                 throw new AuthenticationException("Wrong password for user " + usernamePasswordCreds.getUsername());
             }
 
-            return new Authentication(managedUser.getName(), managedUser.getRoles().stream().toArray(String[]::new));
+            return new Authentication(managedUser.getName(), managedUser.getRoles().stream().toArray(RoleImpl[]::new));
         } else if (credentials instanceof UserApiTokenCredentials apiTokenCreds) {
             String[] apiTokenParts = apiTokenCreds.getApiToken().split("\\.");
             if (apiTokenParts.length != 3 || !APITOKEN_PREFIX.equals(apiTokenParts[0])) {
@@ -165,7 +165,7 @@ public class UserRegistryImpl extends AbstractRegistry<User, String, UserProvide
 
                     if (incomingTokenHash.equals(existingTokenHashAndSalt[0])) {
                         return new Authentication(managedUser.getName(),
-                                managedUser.getRoles().stream().toArray(String[]::new), userApiToken.getScope());
+                                managedUser.getRoles().stream().toArray(RoleImpl[]::new), userApiToken.getScope());
                     }
                 }
             }

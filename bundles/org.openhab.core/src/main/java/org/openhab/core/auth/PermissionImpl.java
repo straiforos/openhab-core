@@ -13,14 +13,14 @@
 package org.openhab.core.auth;
 
 /**
- * Simplest possible implementation of permission.
+ * Permission in the system with unique name.
  *
- * @author Łukasz Dywicki - Initial contribution.
+ * @author Stephen Traifotos - Initial Contribution
  */
-public class NamedPermission implements Permission {
+public class PermissionImpl implements Permission {
     private final String name;
 
-    public NamedPermission(String name) {
+    public PermissionImpl(String name) {
         this.name = name;
     }
 

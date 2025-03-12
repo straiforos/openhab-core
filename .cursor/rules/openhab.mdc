@@ -1,0 +1,50 @@
+rules:
+  # ... existing rules ...
+  
+  java-file-headers:
+    description: "Ensures Java files have proper copyright and contributor headers"
+    pattern: |
+      ^/\*\*
+       \* Copyright \(c\) \d{4}(-\d{4})? Contributors to the openHAB project
+       \*
+       \* See the NOTICE file\(s\) distributed with this work for additional
+       \* information\.
+       \*
+       \* This program and the accompanying materials are made available under the
+       \* terms of the Eclipse Public License 2\.0 which is available at
+       \* http://www\.eclipse\.org/legal/epl-2\.0
+       \*
+       \* SPDX-License-Identifier: EPL-2\.0
+       \*/
+      package .*?;
+
+      (?:.*?\n)*?
+
+      /\*\*
+       \* @author .+ - Initial contribution
+       \*/
+    files: "*.java"
+    if: "git diff --name-only $PREVIOUS_COMMIT $CURRENT_COMMIT | grep -q '\.java$'"
+    message: |
+      New Java files must include:
+      1. The standard openHAB copyright header
+      2. A JavaDoc comment with the initial contributor's name
+      
+      Example:
+      /**
+       * Copyright (c) 2010-2025 Contributors to the openHAB project
+       *
+       * See the NOTICE file(s) distributed with this work for additional
+       * information.
+       *
+       * This program and the accompanying materials are made available under the
+       * terms of the Eclipse Public License 2.0 which is available at
+       * http://www.eclipse.org/legal/epl-2.0
+       *
+       * SPDX-License-Identifier: EPL-2.0
+       */
+      package org.openhab...;
+      
+      /**
+       * @author YourGitUsername - Initial contribution
+       */ 
