@@ -31,8 +31,9 @@ public class SseSinkTopicInfo {
     private final List<String> regexFilters;
     private List<Permission> userPermissions;
 
-    public SseSinkTopicInfo(String topicFilter) {
+    public SseSinkTopicInfo(String topicFilter, List<Permission> userPermissions) {
         this.regexFilters = SseUtil.convertToRegex(topicFilter);
+        this.userPermissions = userPermissions;ew
     }
 
     public static Predicate<SseSinkTopicInfo> matchesTopic(final String topic) {

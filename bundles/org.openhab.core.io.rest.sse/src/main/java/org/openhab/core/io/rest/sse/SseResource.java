@@ -18,6 +18,8 @@ import static org.openhab.core.io.rest.sse.internal.SseSinkTopicInfo.matchesTopi
 import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -73,6 +75,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.openhab.core.auth.RequiresPermission;
+import org.openhab.core.auth.Permission;
 import static org.openhab.core.auth.Permissions.*;
 
 /**
@@ -185,8 +188,10 @@ public class SseResource implements RESTResource, SsePublisher {
             return;
         }
 
-        SseSinkTopicInfo sinkInfo = new SseSinkTopicInfo(eventFilter);
-        sinkInfo.setUserPermissions(getCurrentUserPermissions());
+        // TODO get permissions from auth manager
+        List<Permission> permissions = new ArrayList<>();
+
+        SseSinkTopicInfo sinkInfo = new SseSinkTopicInfo(eventFilter, permissions);
         topicBroadcaster.add(sseEventSink, sinkInfo);
 
         addCommonResponseHeaders(response);
