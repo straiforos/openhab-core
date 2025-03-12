@@ -15,8 +15,7 @@ package org.openhab.core.auth;
 /**
  * Main entry point for security checks.
  * 
- * @author Łukasz Dywicki - Initial contribution
- * @author Stephen Traiforos - Brought from Łukasz's contributions.
+ * @author Stephen Traiforos - Initial contribution
  */
 public interface AuthorizationManager {
     <T> boolean hasPermission(Permission permission, T object, Authentication authentication);
