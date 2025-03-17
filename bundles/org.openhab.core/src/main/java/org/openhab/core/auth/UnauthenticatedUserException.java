@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 
 /**
  * Exception thrown when a user is not authenticated (no principal exists)
+ * 
  * @author Stephen Traiforos - Initial Contributor
  */
 public class UnauthenticatedUserException extends WebApplicationException {
