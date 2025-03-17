@@ -89,7 +89,7 @@ public class PermissionFilter implements ContainerRequestFilter {
         Set<Permission> userPermissions = roles.stream().flatMap(role -> role.getPermissions().stream())
                 .collect(Collectors.toSet());
         boolean hasPermission = Arrays.stream(permissionAnn.value())
-                .allMatch(requiredPerm -> userPermissions.stream().anyMatch(p -> p.getName().equals(requiredPerm)));
+                .allMatch(requiredPerm -> userPermissions.stream().anyMatch(p -> p.equals(requiredPerm)));
 
         if (!hasPermission) {
             throw new UserUnauthorizedException("User '" + username + "' does not have the required permissions: "
