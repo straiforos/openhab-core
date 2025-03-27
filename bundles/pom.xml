@@ -152,6 +152,14 @@
       <plugin>
         <groupId>biz.aQute.bnd</groupId>
         <artifactId>bnd-maven-plugin</artifactId>
+        <configuration>
+          <bnd><![CDATA[
+Bundle-SymbolicName: ${project.artifactId}
+Import-Package: \
+  javax.validation.constraints;version="[2.0,3)",\
+  *
+          ]]></bnd>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
