@@ -71,7 +71,7 @@ public class UserRegistryImplTest {
 
     @Test
     public void testUserManagement() throws Exception {
-        User user = registry.register("username", "password", Set.of("administrator"));
+        User user = registry.register("username", "password", Set.of(new RoleImpl(Role.ADMIN)));
         registry.added(managedProviderMock, user);
         assertNotNull(user);
         registry.authenticate(new UsernamePasswordCredentials("username", "password"));
@@ -85,7 +85,7 @@ public class UserRegistryImplTest {
 
     @Test
     public void testSessions() throws Exception {
-        ManagedUser user = (ManagedUser) registry.register("username", "password", Set.of("administrator"));
+        ManagedUser user = (ManagedUser) registry.register("username", "password", Set.of(new RoleImpl(Role.ADMIN)));
         registry.added(managedProviderMock, user);
         assertNotNull(user);
         UserSession session1 = new UserSession(UUID.randomUUID().toString(), "s1", "urn:test", "urn:test", "scope");
@@ -103,7 +103,7 @@ public class UserRegistryImplTest {
 
     @Test
     public void testApiTokens() throws Exception {
-        ManagedUser user = (ManagedUser) registry.register("username", "password", Set.of("administrator"));
+        ManagedUser user = (ManagedUser) registry.register("username", "password", Set.of(new RoleImpl(Role.ADMIN)));
         registry.added(managedProviderMock, user);
         assertNotNull(user);
         String token1 = registry.addUserApiToken(user, "token1", "scope1");
