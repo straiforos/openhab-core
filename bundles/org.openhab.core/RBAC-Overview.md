@@ -1,149 +1,152 @@
-# RBAC Overview and Architecture
+# Role-Based Access Control (RBAC) Overview
 
-## System Overview
+## System Architecture
 
-The RBAC implementation in openHAB core provides a flexible and extensible way to manage user permissions through roles. The system follows a hierarchical model where:
+The RBAC system in openHAB Core provides a comprehensive security framework for managing user access and permissions. The system is built on several key components that work together to enforce security policies.
 
-1. Users have roles
-2. Roles have permissions
-3. Permissions control access to resources
-4. The system enforces permissions through filters and annotations
+```mermaid
+classDiagram
+    class User {
+        +String name
+        +String uid
+        +Set~Role~ roles
+        +getName() String
+        +getUID() String
+        +getRoles() Set~Role~
+    }
+    
+    class Role {
+        +String name
+        +List~Permission~ permissions
+        +getName() String
+        +getPermissions() List~Permission~
+        +setPermissions(List~Permission~)
+    }
+    
+    class Permission {
+        +String name
+        +String description
+        +getName() String
+        +getDescription() String
+    }
+    
+    class RoleRegistry {
+        +add(Role)
+        +remove(Role)
+        +get(String) Role
+        +getAll() List~Role~
+    }
+    
+    class SecurityContext {
+        +User user
+        +hasPermission(Permission) boolean
+        +hasRole(String) boolean
+        +getPermissions() Set~Permission~
+        +getRoles() Set~Role~
+    }
+    
+    User "1" *-- "*" Role : has
+    Role "1" *-- "*" Permission : contains
+    RoleRegistry "1" *-- "*" Role : manages
+    SecurityContext "1" *-- "1" User : contains
+```
 
 ## Core Components
 
-```plantuml
-@startuml
-interface User {
-    +getName(): String
-    +getUID(): String
-    +getRoles(): Set<Role>
-}
-
-interface Role {
-    +getName(): String
-    +getPermissions(): List<Permission>
-    +ADMIN: String
-    +USER: String
-}
-
-interface Permission {
-    +getName(): String
-    +getDescription(): String
-}
-
-interface RoleRegistry {
-    +add(Role)
-    +remove(Role)
-    +get(String)
-}
-
-enum Permissions {
-    ALL("*")
-    READ("read")
-    STATE("state")
-    COMMAND("command")
-    MANAGE("manage")
-    PERSISTENCE("persistence")
-    +getPermission(): Permission
-}
-
-abstract class AddonPermissions {
-    +getPermission(): Permission
-}
-
-class CustomAddonPermissions {
-    +CUSTOM_ACTION("custom_action")
-    +CUSTOM_VIEW("custom_view")
-}
-
-User "1" *-- "*" Role : has
-Role "1" *-- "*" Permission : has
-RoleRegistry "1" *-- "*" Role : manages
-Permissions "1" *-- "1" Permission : creates
-AddonPermissions "1" *-- "1" Permission : creates
-CustomAddonPermissions --|> AddonPermissions
-@enduml
-```
-
-## Component Descriptions
-
 ### User
-- Represents a system user
-- Contains a set of roles
-- Provides user identification and role access
+- Represents an authenticated user in the system
+- Has a unique identifier (UID) and display name
+- Associated with one or more roles
+- Used for authentication and authorization
 
 ### Role
 - Defines a set of permissions
-- Has reserved names ("administrator" and "user")
-- Can be assigned to multiple users
+- Can be assigned to users
+- Provides a way to group related permissions
+- Supports dynamic permission updates
 
 ### Permission
 - Represents a specific access right
 - Has a name and description
-- Can be standard or addon-specific
+- Used to control access to system resources
+- Standard permissions are defined in the `Permissions` enum
 
 ### RoleRegistry
-- Manages role creation and lookup
-- Maintains the set of available roles
-- Provides role management operations
+- Central management point for roles
+- Handles role creation and deletion
+- Maintains role assignments
+- Provides role lookup functionality
+
+### SecurityContext
+- Thread-local security information
+- Contains current user and permissions
+- Used for permission checking
+- Provides role validation
 
 ## Integration Points
 
-### Authentication Providers
-- JAAS Authentication
-- OAuth2 Authentication
-- Custom authentication providers
+### REST API
+- Uses `@RequiresPermission` annotation
+- Integrates with JWT authentication
+- Supports role-based access control
+- Handles permission validation
 
-### REST Layer
-- REST endpoint security
-- Resource access control
-- API permission enforcement
+### Authentication
+- Works with JAAS authentication
+- Supports OAuth2 client integration
+- Manages user sessions
+- Handles security tokens
 
-### WebSocket
-- Real-time communication security
-- Connection permission validation
-- Event subscription control
+### Authorization
+- Enforces permission checks
+- Validates role assignments
+- Manages access control
+- Handles security exceptions
+
+## Security Features
+
+### Permission Checking
+```java
+@RequiresPermission(Permissions.READ)
+public void readItem() {
+    // Implementation
+}
+```
+
+### Role Assignment
+```java
+Role role = new RoleImpl("customRole", 
+    Collections.singletonList(Permissions.READ.getPermission()));
+```
 
 ### Security Context
-- Thread-local security information
-- Permission checking context
-- User session management
+```java
+SecurityContext context = SecurityContextHolder.getContext();
+if (context.hasPermission(Permissions.READ.getPermission())) {
+    // Perform protected operation
+}
+```
 
-## System Flow
+## Future Enhancements
 
-1. User Authentication
-   - User credentials are validated
-   - User roles are loaded
-   - Security context is established
+1. Dynamic Role Management
+   - Runtime role creation
+   - Permission inheritance
+   - Role hierarchies
 
-2. Permission Checking
-   - Method/class annotations are processed
-   - User roles are checked
-   - Permission hierarchy is validated
+2. Enhanced Security
+   - Permission caching
+   - Role validation
+   - Access logging
 
-3. Access Control
-   - Resource access is granted/denied
-   - Security context is maintained
-   - Audit events are logged
+3. Integration Features
+   - LDAP integration
+   - OAuth2 provider support
+   - Custom authentication
 
-## Design Principles
+## Related Documentation
 
-1. Extensibility
-   - Support for custom permissions
-   - Plugin architecture for addons
-   - Flexible role management
-
-2. Security
-   - Principle of least privilege
-   - Role-based access control
-   - Permission hierarchy
-
-3. Usability
-   - Simple permission model
-   - Clear role structure
-   - Intuitive API
-
-4. Performance
-   - Efficient permission checking
-   - Cached security contexts
-   - Optimized role lookups 
+- [Permissions System](RBAC-Permissions.md)
+- [Roles and Users](RBAC-Roles.md)
+- [Security Implementation](RBAC-Security.md)
+- [Development Guide](RBAC-Development.md) 

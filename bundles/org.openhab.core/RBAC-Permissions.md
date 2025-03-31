@@ -1,159 +1,120 @@
 # RBAC Permissions System
 
+## Overview
+
+The permissions system in openHAB Core provides a standardized way to control access to system resources. The system is built around the `Permissions` enum which defines the standard set of permissions available in the system.
+
 ## Standard Permissions
 
-The system defines a set of standard permissions in the `Permissions` enum that control access to various system functionalities:
-
-### ALL
-- Symbol: `*`
-- Description: Grants complete access to all functionalities
-- Use case: Administrator-level access
-- Hierarchy: Top level
-
-### READ
-- Symbol: `read`
-- Description: Allows reading item states and metadata
-- Use case: View-only access to items
-- Hierarchy: Basic access
-
-### STATE
-- Symbol: `state`
-- Description: Permits access to item state information
-- Use case: Monitoring item states
-- Hierarchy: Basic access
-
-### COMMAND
-- Symbol: `command`
-- Description: Enables sending commands to items
-- Use case: Controlling items
-- Hierarchy: Control access
-
-### MANAGE
-- Symbol: `manage`
-- Description: Grants administrative capabilities like creating/updating items
-- Use case: System configuration
-- Hierarchy: Administrative access
-
-### PERSISTENCE
-- Symbol: `persistence`
-- Description: Controls access to persistence services
-- Use case: Historical data access
-- Hierarchy: Data access
-
-## Permission Hierarchy
-
-```plantuml
-@startuml
-skinparam packageStyle rectangle
-
-package "Permission Hierarchy" {
-    [ALL] as all
-    [MANAGE] as manage
-    [COMMAND] as command
-    [STATE] as state
-    [READ] as read
-    [PERSISTENCE] as persistence
-}
-
-all --> manage
-manage --> command
-manage --> state
-manage --> read
-manage --> persistence
-
-note right of all
-  Grants complete access
-  to all functionalities
-end note
-
-note right of manage
-  Administrative
-  capabilities
-end note
-
-note right of command
-  Control access
-  to items
-end note
-
-note right of state
-  State information
-  access
-end note
-
-note right of read
-  Basic read access
-  to items
-end note
-
-note right of persistence
-  Historical data
-  access
-end note
-@enduml
+```mermaid
+classDiagram
+    class Permissions {
+        <<enumeration>>
+        ALL
+        READ
+        STATE
+        COMMAND
+        MANAGE
+        PERSISTENCE
+        +getPermission() Permission
+    }
+    
+    class Permission {
+        +String name
+        +String description
+        +getName() String
+        +getDescription() String
+    }
+    
+    Permissions "1" *-- "1" Permission : creates
 ```
 
-## Permission Best Practices
+### Permission Types
 
-### Naming Conventions
-1. Use standard permission names
-2. Follow permission hierarchy
-3. Use descriptive permission combinations
-4. Document permission usage
+1. `ALL` ("*")
+   - Grants complete access to all resources
+   - Used for administrative roles
+   - Implies all other permissions
 
-### Documentation
-1. Document each permission's purpose
-2. Include usage examples
-3. Specify permission hierarchy
-4. Document dependencies
+2. `READ` ("read")
+   - Allows reading resource values
+   - Basic access for viewing items
+   - Required for most operations
 
-### Implementation
-1. Use enum for permissions
-2. Implement proper permission checking
-3. Handle permission inheritance
-4. Follow least privilege principle
+3. `STATE` ("state")
+   - Controls access to item states
+   - Allows reading and writing states
+   - Required for item updates
 
-## Permission Usage Examples
+4. `COMMAND` ("command")
+   - Permits sending commands to items
+   - Required for item control
+   - Implies READ permission
 
-### Basic Permission Check
+5. `MANAGE` ("manage")
+   - Allows system configuration
+   - Required for administrative tasks
+   - Implies COMMAND permission
+
+6. `PERSISTENCE` ("persistence")
+   - Controls data persistence access
+   - Required for historical data
+   - Implies READ permission
+
+## Usage Examples
+
+### Method-Level Permissions
+
 ```java
 @RequiresPermission(Permissions.READ)
-public void readItemState() {
-    // Method implementation
+public Item getItem(String name) {
+    // Implementation
 }
-```
 
-### Multiple Permission Check
-```java
 @RequiresPermission({ Permissions.READ, Permissions.STATE })
-public void readItemStateWithHistory() {
-    // Method implementation
+public void updateItemState(String name, State state) {
+    // Implementation
 }
 ```
 
-## Permission Validation
+### Role Creation
 
-### Method Level
 ```java
-@RequiresPermission(Permissions.COMMAND)
-public void sendCommand(Command command) {
-    // Method implementation
+Role role = new RoleImpl("customRole", Arrays.asList(
+    Permissions.READ.getPermission(),
+    Permissions.STATE.getPermission()
+));
+```
+
+### Permission Checking
+
+```java
+SecurityContext context = SecurityContextHolder.getContext();
+if (context.hasPermission(Permissions.READ.getPermission())) {
+    // Perform read operation
 }
 ```
 
-### Class Level
-```java
-@RequiresPermission(Permissions.MANAGE)
-public class ItemManagementService {
-    // Class implementation
-}
-```
+## Best Practices
 
-### Dynamic Permission Check
-```java
-public boolean hasPermission(Permission permission) {
-    return securityContext.getUser().getRoles().stream()
-        .flatMap(role -> role.getPermissions().stream())
-        .anyMatch(p -> p.equals(permission));
-}
-``` 
+1. Permission Usage
+   - Use standard permissions
+   - Follow permission hierarchy
+   - Use descriptive combinations
+
+2. Security
+   - Principle of least privilege
+   - Regular permission review
+   - Audit access patterns
+
+3. Documentation
+   - Document permission usage
+   - Include usage examples
+   - Specify dependencies
+
+## Related Documentation
+
+- [RBAC Overview](RBAC-Overview.md)
+- [Roles and Users](RBAC-Roles.md)
+- [Security Implementation](RBAC-Security.md)
+- [Development Guide](RBAC-Development.md) 

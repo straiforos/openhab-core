@@ -1,267 +1,176 @@
-# RBAC Security
+# RBAC Security Implementation
 
-## Security Considerations
+## Overview
 
-### Core Security Principles
+The security implementation in openHAB Core provides a comprehensive framework for enforcing role-based access control. The system integrates with various authentication providers and implements security checks at multiple levels.
 
-1. Least Privilege
-   - Users should have minimum required permissions
-   - Roles should contain only necessary permissions
-   - Regular permission audits
+## Security Architecture
 
-2. Role-Based Access
-   - Clear role definitions
-   - Role hierarchy enforcement
-   - Role change monitoring
+```mermaid
+classDiagram
+    class SecurityContext {
+        +User user
+        +hasPermission(Permission) boolean
+        +hasRole(String) boolean
+        +getPermissions() Set~Permission~
+        +getRoles() Set~Role~
+    }
+    
+    class SecurityContextHolder {
+        +getContext() SecurityContext
+        +setContext(SecurityContext)
+        +clearContext()
+    }
+    
+    class AuthFilter {
+        +doFilter(ServletRequest, ServletResponse, FilterChain)
+        +init(FilterConfig)
+        +destroy()
+    }
+    
+    class JwtSecurityContext {
+        +String token
+        +validateToken() boolean
+        +getUser() User
+    }
+    
+    class PermissionFilter {
+        +doFilter(ServletRequest, ServletResponse, FilterChain)
+        +checkPermission(Permission) boolean
+    }
+    
+    SecurityContextHolder "1" *-- "1" SecurityContext : manages
+    AuthFilter "1" *-- "1" SecurityContext : creates
+    JwtSecurityContext ..|> SecurityContext : implements
+    PermissionFilter "1" *-- "1" SecurityContext : uses
+```
 
-3. Authentication Integration
-   - Secure user authentication
-   - Session management
-   - Token validation
+## Security Components
 
-4. Permission Enforcement
-   - Method-level security
-   - Class-level security
-   - Resource access control
+### Security Context
+- Thread-local security information
+- Contains current user and permissions
+- Used for permission checking
+- Provides role validation
 
-## Security Features
+### Authentication Filter
+- Handles user authentication
+- Creates security context
+- Validates security tokens
+- Manages user sessions
+
+### JWT Security
+- Token-based authentication
+- Validates JWT tokens
+- Extracts user information
+- Manages token lifecycle
+
+### Permission Filter
+- Enforces permission checks
+- Validates access rights
+- Handles security exceptions
+- Logs security events
+
+## Implementation Examples
+
+### Security Context Management
+
+```java
+public class SecurityContextManager {
+    private static final ThreadLocal<SecurityContext> contextHolder = new ThreadLocal<>();
+    
+    public static void setContext(SecurityContext context) {
+        contextHolder.set(context);
+    }
+    
+    public static SecurityContext getContext() {
+        return contextHolder.get();
+    }
+    
+    public static void clearContext() {
+        contextHolder.remove();
+    }
+}
+```
+
+### Authentication Filter
+
+```java
+public class AuthFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        String token = httpRequest.getHeader("Authorization");
+        
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+            JwtSecurityContext context = new JwtSecurityContext(token);
+            if (context.validateToken()) {
+                SecurityContextHolder.setContext(context);
+            }
+        }
+        
+        chain.doFilter(request, response);
+        SecurityContextHolder.clearContext();
+    }
+}
+```
 
 ### Permission Checking
 
 ```java
-@RequiresPermission(Permissions.READ)
-public void readItemState() {
-    // Method implementation
-}
-
-@RequiresPermission(Permissions.COMMAND)
-public void sendCommand(Command command) {
-    // Method implementation
-}
-
-@RequiresPermission({ Permissions.READ, Permissions.STATE })
-public void readItemStateWithHistory() {
-    // Method implementation
-}
-```
-
-### Security Context
-
-```java
-public class SecurityContext {
-    private final User user;
-    private final Set<Role> roles;
-    private final Set<Permission> permissions;
-
-    public boolean hasPermission(Permission permission) {
-        return permissions.contains(permission);
-    }
-
-    public boolean hasRole(String roleName) {
-        return roles.stream()
-            .map(Role::getName)
-            .anyMatch(name -> name.equals(roleName));
-    }
-}
-```
-
-### Authentication Integration
-
-```java
-public class AuthenticationProvider {
-    public SecurityContext authenticate(String username, String password) {
-        User user = userRegistry.get(username);
-        if (user != null && validatePassword(user, password)) {
-            return new SecurityContext(user);
+public class PermissionFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+        SecurityContext context = SecurityContextHolder.getContext();
+        if (context == null) {
+            throw new SecurityException("No security context");
         }
-        throw new AuthenticationException("Invalid credentials");
+        
+        if (!checkPermission(context, Permissions.READ.getPermission())) {
+            throw new SecurityException("Insufficient permissions");
+        }
+        
+        chain.doFilter(request, response);
+    }
+    
+    private boolean checkPermission(SecurityContext context, Permission permission) {
+        return context.hasPermission(permission);
     }
 }
 ```
 
 ## Security Best Practices
 
-### Role Management
+1. Authentication
+   - Use secure tokens
+   - Validate credentials
+   - Handle session timeouts
+   - Implement rate limiting
 
-1. Role Naming
-   - Use descriptive names
-   - Follow naming conventions
-   - Avoid reserved names
+2. Authorization
+   - Check permissions early
+   - Validate role assignments
+   - Log security events
+   - Handle security exceptions
 
-2. Role Assignment
-   - Regular role reviews
-   - Document role changes
-   - Monitor role usage
+3. Session Management
+   - Use secure sessions
+   - Implement timeouts
+   - Clear security context
+   - Monitor session usage
 
-3. Permission Assignment
-   - Group related permissions
-   - Follow least privilege
-   - Regular permission audits
+4. Error Handling
+   - Log security failures
+   - Return appropriate errors
+   - Prevent information leakage
+   - Handle edge cases
 
-### Authentication
+## Related Documentation
 
-1. Password Management
-   - Secure password storage
-   - Password complexity requirements
-   - Regular password rotation
-
-2. Session Management
-   - Secure session handling
-   - Session timeout
-   - Concurrent session control
-
-3. Token Security
-   - JWT validation
-   - Token expiration
-   - Token refresh mechanism
-
-## Security Testing
-
-### Unit Tests
-
-```java
-@Test
-public void testPermissionCheck() {
-    User user = createUserWithPermissions(Permissions.READ.getPermission());
-    SecurityContext context = new SecurityContext(user);
-    
-    assertTrue(context.hasPermission(Permissions.READ.getPermission()));
-    assertFalse(context.hasPermission(Permissions.COMMAND.getPermission()));
-}
-
-@Test
-public void testRoleValidation() {
-    Role role = createRole("testRole", Collections.singletonList(Permissions.READ.getPermission()));
-    assertTrue(roleRegistry.add(role));
-    assertFalse(roleRegistry.add(role)); // Duplicate role
-}
-```
-
-### Integration Tests
-
-```java
-@Test
-public void testAuthenticationFlow() {
-    // Test user registration
-    User user = userRegistry.register("testUser", "password", 
-        Collections.singleton(roleRegistry.get("user")));
-    
-    // Test authentication
-    SecurityContext context = authProvider.authenticate("testUser", "password");
-    assertNotNull(context);
-    assertTrue(context.hasRole("user"));
-    
-    // Test permission enforcement
-    assertTrue(context.hasPermission(Permissions.READ.getPermission()));
-    assertFalse(context.hasPermission(Permissions.COMMAND.getPermission()));
-}
-```
-
-### Security Tests
-
-```java
-@Test
-public void testPermissionBypass() {
-    User user = createUserWithPermissions(Permissions.READ.getPermission());
-    SecurityContext context = new SecurityContext(user);
-    
-    // Attempt to bypass permission check
-    try {
-        performRestrictedOperation(context);
-        fail("Should have thrown SecurityException");
-    } catch (SecurityException e) {
-        // Expected
-    }
-}
-
-@Test
-public void testRoleElevation() {
-    User user = createUserWithPermissions(Permissions.READ.getPermission());
-    
-    // Attempt to add admin role
-    try {
-        user.getRoles().add(roleRegistry.get("administrator"));
-        fail("Should have thrown SecurityException");
-    } catch (SecurityException e) {
-        // Expected
-    }
-}
-```
-
-## Security Monitoring
-
-### Audit Logging
-
-```java
-public class SecurityAuditLogger {
-    public void logRoleChange(String username, String roleName, String action) {
-        logger.info("Role change: user={}, role={}, action={}", 
-            username, roleName, action);
-    }
-
-    public void logPermissionCheck(String username, Permission permission, boolean granted) {
-        logger.info("Permission check: user={}, permission={}, granted={}", 
-            username, permission.getName(), granted);
-    }
-}
-```
-
-### Security Events
-
-```java
-public class SecurityEvent {
-    private final String eventType;
-    private final String username;
-    private final String details;
-    private final Instant timestamp;
-
-    public static SecurityEvent roleChange(String username, String roleName, String action) {
-        return new SecurityEvent("ROLE_CHANGE", username, 
-            String.format("Role %s: %s", roleName, action));
-    }
-
-    public static SecurityEvent permissionCheck(String username, Permission permission, boolean granted) {
-        return new SecurityEvent("PERMISSION_CHECK", username,
-            String.format("Permission %s: %s", permission.getName(), 
-                granted ? "granted" : "denied"));
-    }
-}
-```
-
-## Security Configuration
-
-### Security Settings
-
-```java
-public class SecurityConfig {
-    private int sessionTimeout;
-    private int maxLoginAttempts;
-    private boolean requireSecureConnection;
-    private List<String> allowedOrigins;
-
-    public SecurityConfig() {
-        this.sessionTimeout = 3600; // 1 hour
-        this.maxLoginAttempts = 5;
-        this.requireSecureConnection = true;
-        this.allowedOrigins = new ArrayList<>();
-    }
-}
-```
-
-### Security Filters
-
-```java
-@Provider
-public class SecurityFilter implements ContainerRequestFilter {
-    @Override
-    public void filter(ContainerRequestContext requestContext) {
-        String token = requestContext.getHeaderString("Authorization");
-        if (token == null || !validateToken(token)) {
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-        }
-        
-        SecurityContext context = createSecurityContext(token);
-        requestContext.setSecurityContext(context);
-    }
-}
-``` 
+- [RBAC Overview](RBAC-Overview.md)
+- [Permissions System](RBAC-Permissions.md)
+- [Roles and Users](RBAC-Roles.md)
+- [Development Guide](RBAC-Development.md) 
