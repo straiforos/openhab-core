@@ -35,31 +35,52 @@ classDiagram
    - Grants complete access to all resources
    - Used for administrative roles
    - Implies all other permissions
+   - Cannot be overridden by other permissions
 
 2. `READ` ("read")
    - Allows reading resource values
    - Basic access for viewing items
    - Required for most operations
+   - Base permission for viewing system state
 
 3. `STATE` ("state")
    - Controls access to item states
    - Allows reading and writing states
    - Required for item updates
+   - Implies READ permission
+   - Used for monitoring and state changes
 
 4. `COMMAND` ("command")
    - Permits sending commands to items
    - Required for item control
    - Implies READ permission
+   - Default permission for standard users
+   - Can be disabled for read-only access
 
 5. `MANAGE` ("manage")
    - Allows system configuration
    - Required for administrative tasks
    - Implies COMMAND permission
+   - Restricted to administrator role
+   - Controls system-wide changes
 
 6. `PERSISTENCE` ("persistence")
    - Controls data persistence access
    - Required for historical data
    - Implies READ permission
+   - Used for data storage operations
+   - Independent of COMMAND permission
+
+## Permission Hierarchy
+
+```mermaid
+graph TD
+    A[ALL] --> B[MANAGE]
+    B --> C[COMMAND]
+    C --> D[STATE]
+    D --> E[READ]
+    F[PERSISTENCE] --> E
+```
 
 ## Usage Examples
 
@@ -75,12 +96,25 @@ public Item getItem(String name) {
 public void updateItemState(String name, State state) {
     // Implementation
 }
+
+@RequiresPermission(Permissions.COMMAND)
+public void sendCommand(Command command) {
+    // Implementation
+}
 ```
 
 ### Role Creation
 
 ```java
-Role role = new RoleImpl("customRole", Arrays.asList(
+// Standard user role with command access
+Role userRole = new RoleImpl("user", Arrays.asList(
+    Permissions.READ.getPermission(),
+    Permissions.STATE.getPermission(),
+    Permissions.COMMAND.getPermission()
+));
+
+// Read-only user role
+Role readOnlyRole = new RoleImpl("readonly", Arrays.asList(
     Permissions.READ.getPermission(),
     Permissions.STATE.getPermission()
 ));
@@ -93,6 +127,11 @@ SecurityContext context = SecurityContextHolder.getContext();
 if (context.hasPermission(Permissions.READ.getPermission())) {
     // Perform read operation
 }
+
+// Check for command access
+if (context.hasPermission(Permissions.COMMAND.getPermission())) {
+    // Allow command operations
+}
 ```
 
 ## Best Practices
@@ -101,16 +140,19 @@ if (context.hasPermission(Permissions.READ.getPermission())) {
    - Use standard permissions
    - Follow permission hierarchy
    - Use descriptive combinations
+   - Consider permission implications
 
 2. Security
    - Principle of least privilege
    - Regular permission review
    - Audit access patterns
+   - Validate permission sets
 
 3. Documentation
    - Document permission usage
    - Include usage examples
    - Specify dependencies
+   - Explain permission implications
 
 ## Related Documentation
 

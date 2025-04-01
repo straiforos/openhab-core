@@ -46,8 +46,9 @@ classDiagram
 - System configuration access
 
 ### User
-- Basic access permissions
-- READ and STATE permissions
+- Default permissions include READ, STATE, and COMMAND
+- Can be configured for read-only access (READ and STATE only)
+- No MANAGE permission
 - Limited system access
 - No administrative rights
 
