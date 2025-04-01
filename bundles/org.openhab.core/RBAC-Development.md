@@ -256,7 +256,7 @@ sequenceDiagram
 1. Update Permission Annotations
 ```java
 // Old way - JAX-RS role definitions
-@RolesAllowed("admin")
+@RolesAllowed(Role.ADMIN)
 public void oldMethod() {
     // Implementation
 }
