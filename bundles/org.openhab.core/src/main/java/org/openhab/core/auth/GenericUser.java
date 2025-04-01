@@ -21,13 +21,13 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  * Represents a generic {@link User} with a set of roles
  *
  * @author Yannick Schaus - initial contribution
- *
+ * @author Stephen Traiforos - Role based access control
  */
 @NonNullByDefault
 public class GenericUser implements User {
 
     private String name;
-    private Set<String> roles;
+    private Set<Role> roles;
 
     /**
      * Constructs a user attributed with a set of roles.
@@ -35,7 +35,7 @@ public class GenericUser implements User {
      * @param name the username (account name)
      * @param roles the roles attributed to this user
      */
-    public GenericUser(String name, Set<String> roles) {
+    public GenericUser(String name, Set<Role> roles) {
         this.name = name;
         this.roles = roles;
     }
@@ -60,7 +60,12 @@ public class GenericUser implements User {
     }
 
     @Override
-    public Set<String> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + getRoles() + ")";
     }
 }

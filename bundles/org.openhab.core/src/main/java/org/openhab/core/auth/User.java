@@ -22,6 +22,7 @@ import org.openhab.core.common.registry.Identifiable;
  * A user represents an individual, physical person using the system.
  *
  * @author Yannick Schaus - initial contribution
+ * @author Stephen Traiforos (Triforce) - Dynamic roles
  */
 @NonNullByDefault
 public interface User extends Principal, Identifiable<String> {
@@ -32,5 +33,5 @@ public interface User extends Principal, Identifiable<String> {
      * @see Role
      * @return role attributed to the user
      */
-    Set<String> getRoles();
+    Set<Role> getRoles();
 }

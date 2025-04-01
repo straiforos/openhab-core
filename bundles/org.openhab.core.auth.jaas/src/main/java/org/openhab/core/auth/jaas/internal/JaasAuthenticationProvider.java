@@ -14,6 +14,7 @@ package org.openhab.core.auth.jaas.internal;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +34,8 @@ import org.openhab.core.auth.AuthenticationException;
 import org.openhab.core.auth.AuthenticationProvider;
 import org.openhab.core.auth.Credentials;
 import org.openhab.core.auth.GenericUser;
+import org.openhab.core.auth.Role;
+import org.openhab.core.auth.RoleImpl;
 import org.openhab.core.auth.UsernamePasswordCredentials;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -105,13 +108,14 @@ public class JaasAuthenticationProvider implements AuthenticationProvider {
         return new Authentication(name, getRoles(subject.getPrincipals()));
     }
 
-    private String[] getRoles(Set<Principal> principals) {
-        String[] roles = new String[principals.size()];
+    private Role[] getRoles(Set<Principal> principals) {
+        String[] roleStrings = new String[principals.size()];
+        Set<Role> roles = new HashSet<>();
         int i = 0;
         for (Principal principal : principals) {
-            roles[i++] = principal.getName();
+            roles.add(new RoleImpl(principal.getName()));
         }
-        return roles;
+        return (Role[]) roles.toArray();
     }
 
     @Activate

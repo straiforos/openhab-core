@@ -22,3 +22,6 @@ Californium.properties
 
 generated/
 userdata/
+**/.project
+**/.classpath
+bom/compile/.project

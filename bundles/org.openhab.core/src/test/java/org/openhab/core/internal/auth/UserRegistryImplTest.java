@@ -27,11 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openhab.core.auth.ManagedUser;
-import org.openhab.core.auth.User;
-import org.openhab.core.auth.UserApiTokenCredentials;
-import org.openhab.core.auth.UserSession;
-import org.openhab.core.auth.UsernamePasswordCredentials;
+import org.openhab.core.auth.*;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -57,7 +53,7 @@ public class UserRegistryImplTest {
     public void setup() throws Exception {
         when(bundleContextMock.getService(same(managedProviderRefMock))).thenReturn(managedProviderMock);
 
-        registry = new UserRegistryImpl(bundleContextMock, Map.of());
+        registry = new UserRegistryImpl(bundleContextMock, Map.of(), mock(RoleRegistry.class));
         registry.setManagedProvider(managedProviderMock);
         registry.waitForCompletedAsyncActivationTasks();
 
@@ -75,7 +71,7 @@ public class UserRegistryImplTest {
 
     @Test
     public void testUserManagement() throws Exception {
-        User user = registry.register("username", "password", Set.of("administrator"));
+        User user = registry.register("username", "password", Set.of(new RoleImpl(Role.ADMIN)));
         registry.added(managedProviderMock, user);
         assertNotNull(user);
         registry.authenticate(new UsernamePasswordCredentials("username", "password"));
@@ -89,7 +85,7 @@ public class UserRegistryImplTest {
 
     @Test
     public void testSessions() throws Exception {
-        ManagedUser user = (ManagedUser) registry.register("username", "password", Set.of("administrator"));
+        ManagedUser user = (ManagedUser) registry.register("username", "password", Set.of(new RoleImpl(Role.ADMIN)));
         registry.added(managedProviderMock, user);
         assertNotNull(user);
         UserSession session1 = new UserSession(UUID.randomUUID().toString(), "s1", "urn:test", "urn:test", "scope");
@@ -107,7 +103,7 @@ public class UserRegistryImplTest {
 
     @Test
     public void testApiTokens() throws Exception {
-        ManagedUser user = (ManagedUser) registry.register("username", "password", Set.of("administrator"));
+        ManagedUser user = (ManagedUser) registry.register("username", "password", Set.of(new RoleImpl(Role.ADMIN)));
         registry.added(managedProviderMock, user);
         assertNotNull(user);
         String token1 = registry.addUserApiToken(user, "token1", "scope1");

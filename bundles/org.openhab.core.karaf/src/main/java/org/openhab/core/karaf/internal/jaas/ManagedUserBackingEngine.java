@@ -24,6 +24,7 @@ import org.apache.karaf.jaas.boot.principal.UserPrincipal;
 import org.apache.karaf.jaas.modules.BackingEngine;
 import org.openhab.core.auth.ManagedUser;
 import org.openhab.core.auth.Role;
+import org.openhab.core.auth.RoleImpl;
 import org.openhab.core.auth.User;
 import org.openhab.core.auth.UserRegistry;
 
@@ -42,7 +43,7 @@ public class ManagedUserBackingEngine implements BackingEngine {
 
     @Override
     public void addUser(String username, String password) {
-        userRegistry.register(username, password, new HashSet<>(Set.of(Role.USER)));
+        userRegistry.register(username, password, new HashSet<>(Set.of(new RoleImpl(Role.USER))));
     }
 
     @Override
@@ -93,7 +94,7 @@ public class ManagedUserBackingEngine implements BackingEngine {
     public List<RolePrincipal> listRoles(Principal principal) {
         User user = userRegistry.get(principal.getName());
         if (user != null) {
-            return user.getRoles().stream().map(r -> new RolePrincipal(r)).toList();
+            return user.getRoles().stream().map(r -> new RolePrincipal(r.getName())).toList();
         }
         return List.of();
     }
@@ -102,7 +103,7 @@ public class ManagedUserBackingEngine implements BackingEngine {
     public void addRole(String username, String role) {
         User user = userRegistry.get(username);
         if (user instanceof ManagedUser managedUser) {
-            managedUser.getRoles().add(role);
+            managedUser.getRoles().add(new RoleImpl(role));
             userRegistry.update(managedUser);
         }
     }

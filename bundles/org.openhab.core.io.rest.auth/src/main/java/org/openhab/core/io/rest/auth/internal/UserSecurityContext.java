@@ -19,6 +19,8 @@ import javax.ws.rs.core.SecurityContext;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.auth.Authentication;
+import org.openhab.core.auth.Role;
+import org.openhab.core.auth.RoleImpl;
 import org.openhab.core.auth.User;
 
 /**
@@ -54,7 +56,12 @@ public class UserSecurityContext implements AuthenticationSecurityContext {
 
     @Override
     public boolean isUserInRole(@Nullable String role) {
-        return user.getRoles().contains(role);
+        if (role != null) {
+            Role userRole = new RoleImpl(role);
+            return user.getRoles().contains(userRole);
+        }
+
+        return false;
     }
 
     @Override

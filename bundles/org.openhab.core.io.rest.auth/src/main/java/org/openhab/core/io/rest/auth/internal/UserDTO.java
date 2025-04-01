@@ -14,6 +14,7 @@ package org.openhab.core.io.rest.auth.internal;
 
 import java.util.Collection;
 
+import org.openhab.core.auth.Role;
 import org.openhab.core.auth.User;
 
 /**
@@ -23,7 +24,7 @@ import org.openhab.core.auth.User;
  */
 public class UserDTO {
     public String name;
-    public Collection<String> roles;
+    public Collection<Role> roles;
 
     public UserDTO(User user) {
         super();

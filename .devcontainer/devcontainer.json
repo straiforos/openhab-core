@@ -1,0 +1,4 @@
+{
+    "image":"mcr.microsoft.com/devcontainers/universal:2",
+    "postCreateCommand": "sdk install java 21.0.5-jbr && sdk default java 21.0.5-jbr && echo java --version && mvn install -Dmaven.test.skip=true -Dfeatures.verify.skip=true -Dspotless.check.skip=true"
+}

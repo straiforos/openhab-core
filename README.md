@@ -50,3 +50,7 @@ If there are tests that are failing occasionally on your local build, run `mvn -
 
 If you want to become a contributor to the project, please read about [contributing](https://www.openhab.org/docs/developer/contributing.html) and check our [guidelines](https://www.openhab.org/docs/developer/guidelines.html) first.
 
+## Role-Based Access Control (RBAC)
+
+For information about the Role-Based Access Control system, including permissions, roles, and security features, see the [RBAC Overview](bundles/org.openhab.core/RBAC-Overview.md).
+

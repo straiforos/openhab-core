@@ -24,6 +24,7 @@ import org.eclipse.jdt.annotation.Nullable;
  * A {@link User} sourced from a managed {@link UserProvider}.
  *
  * @author Yannick Schaus - initial contribution
+ * @author Stephen Traiforos - Role based access control
  */
 @NonNullByDefault
 public class ManagedUser implements User {
@@ -31,7 +32,7 @@ public class ManagedUser implements User {
     private String name;
     private String passwordHash;
     private String passwordSalt;
-    private Set<String> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
     private @Nullable PendingToken pendingToken = null;
     private List<UserSession> sessions = new ArrayList<>();
     private List<UserApiToken> apiTokens = new ArrayList<>();
@@ -106,7 +107,7 @@ public class ManagedUser implements User {
     }
 
     @Override
-    public Set<String> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
@@ -115,7 +116,7 @@ public class ManagedUser implements User {
      *
      * @param roles the new roles
      */
-    public void setRoles(Set<String> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
@@ -175,6 +176,6 @@ public class ManagedUser implements User {
 
     @Override
     public String toString() {
-        return name + " (" + String.join(", ", roles.stream().toArray(String[]::new)) + ")";
+        return name + " (" + String.join(", ", roles.stream().map(r -> r.toString()).toArray(String[]::new)) + ")";
     }
 }

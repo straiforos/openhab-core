@@ -12,6 +12,8 @@
  */
 package org.openhab.core.io.rest.core.internal.item;
 
+import static org.openhab.core.auth.Permissions.*;
+
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -55,6 +57,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.core.auth.RequiresPermission;
 import org.openhab.core.auth.Role;
 import org.openhab.core.common.registry.RegistryChangedRunnableListener;
 import org.openhab.core.events.EventPublisher;
@@ -137,6 +140,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * @author Stefan Triller - Added bulk item add method
  * @author Markus Rathgeb - Migrated to JAX-RS Whiteboard Specification
  * @author Wouter Born - Migrated to OpenAPI annotations
+ * @author Stephen Traiforos - Added ABAC, using Permissions over Roles.
  */
 @Component
 @JaxrsResource
@@ -192,13 +196,9 @@ public class ItemResource implements RESTResource {
     private @Nullable Date lastModified = null;
 
     @Activate
-    public ItemResource(//
-            final @Reference DTOMapper dtoMapper, //
-            final @Reference EventPublisher eventPublisher, //
-            final @Reference ItemBuilderFactory itemBuilderFactory, //
-            final @Reference ItemRegistry itemRegistry, //
-            final @Reference LocaleService localeService, //
-            final @Reference ManagedItemProvider managedItemProvider,
+    public ItemResource(final @Reference DTOMapper dtoMapper, final @Reference EventPublisher eventPublisher,
+            final @Reference ItemBuilderFactory itemBuilderFactory, final @Reference ItemRegistry itemRegistry,
+            final @Reference LocaleService localeService, final @Reference ManagedItemProvider managedItemProvider,
             final @Reference MetadataRegistry metadataRegistry,
             final @Reference MetadataSelectorMatcher metadataSelectorMatcher,
             final @Reference SemanticTagRegistry semanticTagRegistry,
@@ -231,7 +231,7 @@ public class ItemResource implements RESTResource {
     }
 
     @GET
-    @RolesAllowed({ Role.USER, Role.ADMIN })
+    @RequiresPermission(READ)
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(operationId = "getItems", summary = "Get all available items.", responses = {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(array = @ArraySchema(schema = @Schema(implementation = EnrichedItemDTO.class)))) })
@@ -287,6 +287,7 @@ public class ItemResource implements RESTResource {
         return Response.ok(new Stream2JSONInputStream(itemStream)).build();
     }
 
+    // TODO remove roles allowed and use permissions instead becoming more of a ABAC - Attribute Based Access Control.
     /**
      *
      * @param itemname name of the item
@@ -311,6 +312,7 @@ public class ItemResource implements RESTResource {
         }
     }
 
+    // TODO add permission check for READ
     @GET
     @RolesAllowed({ Role.USER, Role.ADMIN })
     @Path("/{itemname: [a-zA-Z_0-9]+}")
@@ -351,6 +353,7 @@ public class ItemResource implements RESTResource {
         return metadataSelectorMatcher.filterNamespaces(namespaceSelector, locale);
     }
 
+    // TODO add permission check for READ
     /**
      *
      * @param itemname item name to get the state from
@@ -376,6 +379,8 @@ public class ItemResource implements RESTResource {
             return getItemNotFoundResponse(itemname);
         }
     }
+
+    // TODO add permission check for READ
 
     /**
      *
@@ -418,6 +423,7 @@ public class ItemResource implements RESTResource {
         }
     }
 
+    // TODO add permission check for READ.
     @PUT
     @RolesAllowed({ Role.USER, Role.ADMIN })
     @Path("/{itemname: [a-zA-Z_0-9]+}/state")
@@ -455,6 +461,7 @@ public class ItemResource implements RESTResource {
         }
     }
 
+    // TODO add permission check for COMMAND
     @POST
     @RolesAllowed({ Role.USER, Role.ADMIN })
     @Path("/{itemname: [a-zA-Z_0-9]+}")
@@ -497,6 +504,7 @@ public class ItemResource implements RESTResource {
         }
     }
 
+    // TODO add permission check for manage/write
     @PUT
     @RolesAllowed({ Role.ADMIN })
     @Path("/{itemName: [a-zA-Z_0-9]+}/members/{memberItemName: [a-zA-Z_0-9]+}")
@@ -732,7 +740,7 @@ public class ItemResource implements RESTResource {
      * @return Response configured to represent the Item in depending on the status
      */
     @PUT
-    @RolesAllowed({ Role.ADMIN })
+    @RequiresPermission({ MANAGE })
     @Path("/{itemname: [a-zA-Z_0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(operationId = "addOrUpdateItemInRegistry", summary = "Adds a new item to the registry or updates the existing item.", security = {

@@ -12,12 +12,23 @@
  */
 package org.openhab.core.auth;
 
+import java.util.List;
+
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.openhab.core.common.registry.Identifiable;
+
 /**
- * Interface defining constants for roles within the framework.
+ * Interface defining roles which are a collection of privileges.
+ * administrator, and user UID are reserved.
+ *
+ * Roles should be used only as a user facing construct.
+ * The application should look at permissions the user has.
  *
  * @author Kai Kreuzer - Initial contribution
+ * @author Stephen Traiforos - Dynamic Roles and Privileges for RBAC Git issue 3305.
  */
-public interface Role {
+@NonNullByDefault
+public interface Role extends Identifiable<String> {
 
     /**
      * Role of users with administrative rights
@@ -28,4 +39,18 @@ public interface Role {
      * Role of a regular user without any exceptional permissions or restrictions
      */
     String USER = "user";
+
+    /**
+     * Name of the role typically user or administrator.
+     * 
+     * @return name of role.
+     */
+    String getName();
+
+    /**
+     * List of privileges a user role has.
+     * 
+     * @return list of privileges
+     */
+    List<Permission> getPermissions();
 }
